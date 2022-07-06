@@ -10,12 +10,57 @@ class Car {
         this.maxSpeed = 3;
         this.friction = 0.05;
         this.angle = 0;
+        this.damaged = false;
 
+        this.sensor = new Sensor(this);
         this.controls = new Controls();
     }
 
-    update() {
-        this.#move();
+    update(roadBorders) {
+        if (!this.damaged) {
+            this.#move();
+            this.polygon = this.#createPolygon(); // Update polygon after moving the car.
+            this.damaged = this.#assessDamage(roadBorders); // Check if the car hit the borders.
+        }
+        this.sensor.update(roadBorders);
+    }
+
+    #assessDamage(roadBorders) {
+        for (let i = 0; i < roadBorders.length; i++) {
+            if (polysIntersect(this.polygon, roadBorders[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    #createPolygon() {
+        const points = [];
+        const radius = Math.hypot(this.width, this.height) / 2;
+        const alpha = Math.atan2(this.width, this.height);
+
+        // Top-right point
+        points.push({
+            x: this.x - Math.sin(this.angle - alpha) * radius,
+            y: this.y - Math.cos(this.angle - alpha) * radius,
+        });
+        // Top-left point
+        points.push({
+            x: this.x - Math.sin(this.angle + alpha) * radius,
+            y: this.y - Math.cos(this.angle + alpha) * radius,
+        });
+        // Bottom-left point
+        points.push({
+            x: this.x - Math.sin(Math.PI + this.angle - alpha) * radius,
+            y: this.y - Math.cos(Math.PI + this.angle - alpha) * radius,
+        });
+        // Bottom-right point
+        points.push({
+            x: this.x - Math.sin(Math.PI + this.angle + alpha) * radius,
+            y: this.y - Math.cos(Math.PI + this.angle + alpha) * radius,
+        });
+
+        return points;
     }
 
     #move() {
@@ -59,14 +104,23 @@ class Car {
     }
 
     draw(ctx) {
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(-this.angle);
+        // Draw the sensor
+        this.sensor.draw(ctx);
 
-        ctx.beginPath();
-        ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
-        ctx.fill();
+        // Change the color according to the damaged attribute.
+        if (this.damaged) {
+            ctx.fillStyle = '#EE5555';
+        } else {
+            ctx.fillStyle = 'black';
+        }
 
-        ctx.restore();
+        if (this.polygon) {
+            ctx.beginPath();
+            ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
+            for (let i = 1; i < this.polygon.length; i++) {
+                ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
+            }
+            ctx.fill();
+        }
     }
 }

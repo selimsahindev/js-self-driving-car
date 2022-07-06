@@ -9,13 +9,13 @@ car.draw(ctx);
 animate();
 
 function animate() {
-    car.update();
+    car.update(road.borders);
 
     // This resizes the canvas and also clears on every update.
     canvas.height = window.innerHeight;
 
     ctx.save();
-    ctx.translate(0, -car.y + canvas.height * 0.5);
+    ctx.translate(0, -car.y + canvas.height * 0.7);
 
     road.draw(ctx);
     car.draw(ctx);
