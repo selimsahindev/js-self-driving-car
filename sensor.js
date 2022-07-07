@@ -10,19 +10,22 @@ class Sensor {
         this.readings = [];
     }
 
-    update(roadBorders) {
+    update(roadBorders, traffic) {
         this.#castRays(roadBorders);
 
         this.readings = [];
 
         for (let i = 0; i < this.rays.length; i++) {
-            this.readings.push(this.#getReading(this.rays[i], roadBorders));
+            this.readings.push(
+                this.#getReading(this.rays[i], roadBorders, traffic)
+            );
         }
     }
 
-    #getReading(ray, roadBorders) {
+    #getReading(ray, roadBorders, traffic) {
         let touches = [];
 
+        // Check for intersection with road borders.
         for (let i = 0; i < roadBorders.length; i++) {
             const touch = getIntersection(
                 ray[0],
@@ -33,6 +36,23 @@ class Sensor {
 
             if (touch) {
                 touches.push(touch);
+            }
+        }
+
+        // Check for intersection with other cars in traffic.
+        for (let i = 0; i < traffic.length; i++) {
+            const poly = traffic[i].polygon;
+            for (let j = 0; j < poly.length; j++) {
+                const touch = getIntersection(
+                    ray[0],
+                    ray[1],
+                    poly[j],
+                    poly[(j + 1) % poly.length]
+                );
+
+                if (touch) {
+                    touches.push(touch);
+                }
             }
         }
 
@@ -97,7 +117,7 @@ class Sensor {
 
             // Draw the rest of the line after the touch point.
             ctx.beginPath();
-            ctx.strokeStyle = '#889988';
+            ctx.strokeStyle = '#888888';
             ctx.moveTo(end.x, end.y);
             ctx.lineTo(this.rays[i][1].x, this.rays[i][1].y);
             ctx.stroke();

@@ -1,12 +1,20 @@
 class Controls {
-    constructor() {
+    constructor(type) {
         this.forward = false;
         this.left = false;
         this.right = false;
         this.reverse = false;
 
-        // # means this is a private method.
-        this.#addKeyboardListeners();
+        switch (type) {
+            case 'KEYS':
+                // # means this is a private method.
+                this.#addKeyboardListeners();
+                break;
+            case 'DUMMY':
+                // Other cars in traffic are constantly moving forward.
+                this.forward = true;
+                break;
+        }
     }
 
     #addKeyboardListeners() {
