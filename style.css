@@ -2,9 +2,23 @@ body {
     margin: 0;
     background: #77AA77;
     overflow: hidden;
-    text-align: center;
 }
 
-#myCanvas {
+#carCanvasContainer {
+    text-align: center;
+    margin-left: 20%;
+    width: 20%;
+    float: left;
+}
+
+#carCanvas {
     background: lightgray;
+}
+
+#networkCanvasContainer {
+    text-align: center;
+    padding-top: 112px;
+    margin-right: 5%;
+    width: 55%;
+    float: right;
 }
