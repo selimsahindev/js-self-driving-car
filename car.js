@@ -18,13 +18,7 @@ class Car {
         if (controlType != 'DUMMY') {
             this.sensor = new Sensor(this);
             // We pass the neuron counts of the input layer, a hidden layer, and the output layer.
-            this.brain = new NeuralNetwork([
-                this.sensor.rayCount,
-                10,
-                10,
-                10,
-                4,
-            ]);
+            this.brain = new NeuralNetwork([this.sensor.rayCount, 6, 4]);
         }
         this.controls = new Controls(controlType);
     }
@@ -134,9 +128,9 @@ class Car {
         this.y -= Math.cos(this.angle) * this.speed;
     }
 
-    draw(ctx) {
+    draw(ctx, drawSensor = false) {
         // Draw the sensor
-        if (this.sensor && !car.damaged) {
+        if (drawSensor && this.sensor && !this.damaged) {
             this.sensor.draw(ctx);
         }
 

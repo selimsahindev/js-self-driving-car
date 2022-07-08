@@ -99,7 +99,7 @@ class Visualizer {
     }
 
     static #getNodeX(nodes, index, left, right) {
-        return ((index + 1) * right) / (nodes.length + 1);
+        return ((index + 1) * right * 1.08) / (nodes.length + 1);
 
         // return lerp(
         //     left,

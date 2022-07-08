@@ -106,7 +106,7 @@ class Sensor {
                 end = this.readings[i];
             }
 
-            ctx.lineWidth = 1.75;
+            ctx.lineWidth = 0.75;
 
             // Draw the line up to the end point.
             ctx.beginPath();
